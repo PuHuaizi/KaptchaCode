@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
@@ -18,7 +20,8 @@ import com.google.code.kaptcha.impl.DefaultKaptcha;
 /**
  * @author Admin
  */
-@Controller
+// @Controller
+@RestController
 public class KaptchaController {
 
     /**
@@ -43,6 +46,8 @@ public class KaptchaController {
             // 生产验证码字符串并保存到session中
             String createText = kaptcha.createText();
             httpServletRequest.getSession().setAttribute("rightCode", createText);
+            // 设置 Session 过期时间
+            // httpServletRequest.getSession().setMaxInactiveInterval(120);
             // 使用生产的验证码字符串返回一个BufferedImage对象并转为byte写入到byte数组中
             BufferedImage challenge = kaptcha.createImage(createText);
             ImageIO.write(challenge, "jpg", jpegOutputStream);
@@ -72,7 +77,7 @@ public class KaptchaController {
      */
     @RequestMapping("/verify")
     public ModelAndView imgVerifyCode(HttpServletRequest httpServletRequest,
-                                                         HttpServletResponse httpServletResponse) {
+                                      HttpServletResponse httpServletResponse) {
         ModelAndView andView = new ModelAndView();
         String rightCode = (String) httpServletRequest.getSession().getAttribute("rightCode");
         String tryCode = httpServletRequest.getParameter("tryCode");
@@ -91,4 +96,11 @@ public class KaptchaController {
     public String toIndex() {
         return "index";
     }
+
+    @RequestMapping(value = "/session", method = RequestMethod.GET)
+    public String getSessionId(HttpServletRequest request) {
+        int sessionTime = request.getSession().getMaxInactiveInterval();
+        return "SessionID：" + request.getSession().getId() + "**********" + "生命周期：" + sessionTime;
+    }
+
 }

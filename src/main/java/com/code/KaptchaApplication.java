@@ -10,8 +10,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
  */
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 public class KaptchaApplication {
-
     public static void main(String[] args) {
-            SpringApplication.run(KaptchaApplication.class, args);
+        SpringApplication.run(KaptchaApplication.class, args);
     }
 }

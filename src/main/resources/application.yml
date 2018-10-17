@@ -1,3 +1,5 @@
-server:
-  port: 80
-  context-path: /
+#server:
+#  port: 8090
+#  session-timeout: 120
+#  tomcat.max-threads: 0
+#  tomcat.uri-encoding: UTF-8
