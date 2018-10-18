@@ -1,6 +1,7 @@
 package com.code.http;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -53,10 +54,10 @@ public class HttpAPIService {
         if (response.getStatusLine().getStatusCode() == 200) {
             // 返回响应体的内容
             // return EntityUtils.toString(response.getEntity(), "UTF-8");
-            String cookies = StringUtils.join(context.getCookieStore().getCookies());
+            // String cookies = StringUtils.join(context.getCookieStore().getCookies());
             String headers = StringUtils.join(response.getAllHeaders());
 
-            return cookies + headers;
+            return headers;
         }
         return null;
     }

@@ -2,6 +2,10 @@ package com.code.controller;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
@@ -20,8 +24,8 @@ import com.google.code.kaptcha.impl.DefaultKaptcha;
 /**
  * @author Admin
  */
-// @Controller
-@RestController
+@Controller
+// @RestController
 public class KaptchaController {
 
     /**
@@ -75,21 +79,71 @@ public class KaptchaController {
      * @param httpServletResponse
      * @return
      */
+    // @RequestMapping("/verify")
+    // public ModelAndView imgVerifyCode(HttpServletRequest httpServletRequest,
+    //                                   HttpServletResponse httpServletResponse) {
+    //     ModelAndView andView = new ModelAndView();
+    //     String rightCode = (String) httpServletRequest.getSession().getAttribute("rightCode");
+    //     String tryCode = httpServletRequest.getParameter("tryCode");
+    //     System.out.println("rightCode:" + rightCode + " ———— tryCode:" + tryCode);
+    //     if (!rightCode.equals(tryCode)) {
+    //         andView.addObject("info", "错误的验证码");
+    //         andView.setViewName("index");
+    //     } else {
+    //         andView.addObject("info", "登录成功");
+    //         andView.setViewName("success");
+    //     }
+    //     // return andView;
+    //     return new ModelAndView("redirect:/cookies");
+    // }
+
+    /**
+     * 3、校对验证码
+     *
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping("/verify")
-    public ModelAndView imgVerifyCode(HttpServletRequest httpServletRequest,
-                                      HttpServletResponse httpServletResponse) {
-        ModelAndView andView = new ModelAndView();
-        String rightCode = (String) httpServletRequest.getSession().getAttribute("rightCode");
-        String tryCode = httpServletRequest.getParameter("tryCode");
+    public String imgVerifyCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // 得到请求的参数Map，注意map的value是String数组类型
+        // Map map = request.getParameterMap();
+        // Set<String> keySet = map.keySet();
+        // for (String key : keySet) {
+        //     String[] values = (String[]) map.get(key);
+        //     for (String value : values) {
+        //         System.out.println(key+"="+value);
+        //     }
+        // }
+
+        // String jsoncallback =  request.getParameter("jsoncallback");
+        // String mobile =  request.getParameter("mobile");
+        // String _ =  request.getParameter("_");
+        String jsoncallback = "jQuery21405098761300080115_1539846799825";
+        String mobile = "15261660178";
+        String _ = "1539846799827";
+
+        request.setAttribute("jsoncallback", jsoncallback);
+        request.setAttribute("mobile", mobile);
+        request.setAttribute("_", _);
+
+        // Enumeration requestHeaders = request.getHeaderNames();
+        // while (requestHeaders.hasMoreElements()) {
+        //     String headerName = (String) requestHeaders.nextElement();
+        //     String headValue = request.getHeader(headerName);
+        //     System.out.println(headerName + "=" + headValue);
+        // }
+
+
+        String rightCode = (String) request.getSession().getAttribute("rightCode");
+        String tryCode = request.getParameter("tryCode");
         System.out.println("rightCode:" + rightCode + " ———— tryCode:" + tryCode);
         if (!rightCode.equals(tryCode)) {
-            andView.addObject("info", "错误的验证码");
-            andView.setViewName("index");
+            response.sendRedirect("/index");
         } else {
-            andView.addObject("info", "登录成功");
-            andView.setViewName("success");
+            response.sendRedirect("/cookies");
         }
-        return andView;
+        return null;
     }
 
     @RequestMapping("/index")
