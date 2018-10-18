@@ -17,6 +17,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Admin
@@ -24,47 +26,47 @@ import java.util.Enumeration;
 @RestController
 public class HttpClientController {
 
-    @Resource
-    private HttpAPIService httpAPIService;
+    //@Resource
+    //private HttpAPIService httpAPIService;
 
     @RequestMapping("/cookies")
     public String getCookies(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // HttpResult result = new HttpResult();
         // result.setBody(httpAPIService.doGet("https://ids.cdstm.cn:8443/zgkjg/doLogin.jsp"));
+        String url = "https://ids.cdstm.cn:8443/zgkjg/ids/sendSMS.do";
 
-        // 创建 HttpClient 实例
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        // 创建 HttpGet 实例
-        HttpGet httpGet = new HttpGet("https://www.baidu.com");
+        Map<String, Object> params = new HashMap<>();
+        params.put("jsoncallback", request.getAttribute("jsoncallback"));
+        params.put("mobile", request.getAttribute("mobile"));
+        params.put("_", request.getAttribute("_"));
 
+        Map<String, String> headers = new HashMap<>();
         Enumeration requestHeaders = request.getHeaderNames();
         while (requestHeaders.hasMoreElements()) {
             String headerName = (String) requestHeaders.nextElement();
             String headValue = request.getHeader(headerName);
             System.out.println(headerName + "=" + headValue);
 
-            httpGet.setHeader(headerName, headValue);
+            headers.put(headerName, headValue);
         }
-        // httpGet.setHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; QQDownload 1.7; .NET CLR 1.1.4322; CIBA; .NET CLR 2.0.50727");
 
+        String result = HttpAPIService.get(url, params, headers);
+
+        // 创建 HttpClient 实例
+        //CloseableHttpClient httpClient = HttpClients.createDefault();
+        // 创建 HttpGet 实例
+        //HttpGet httpGet = new HttpGet("https://www.baidu.com");
         // 执行http get请求
         // CloseableHttpResponse closeableHttpResponse = httpClient.execute(httpGet);
         // 获取返回实体
         // HttpEntity entity = closeableHttpResponse.getEntity();
-
-        // String headers = StringUtils.join(closeableHttpResponse.getAllHeaders());
-
         // 获取网页内容
         // System.out.println("网页内容：" + EntityUtils.toString(entity, "utf-8"));
         // response关闭
         // closeableHttpResponse.close();
         // httpClient关闭
         // httpClient.close();
-
-        // result.setBody(httpAPIService.doGet("https://www.baidu.com"));
-        // result.setCode(1);
-        // System.out.println(result);
-        // return headers;
-        return "111111111111111111";
+        
+        return result;
     }
 }
