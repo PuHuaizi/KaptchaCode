@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,8 +51,8 @@ public class KaptchaController {
             // 生产验证码字符串并保存到session中
             String createText = kaptcha.createText();
             httpServletRequest.getSession().setAttribute("rightCode", createText);
-            // 设置 Session 过期时间
-            // httpServletRequest.getSession().setMaxInactiveInterval(120);
+            // 设置 Session 过期时间（单位：秒）
+            httpServletRequest.getSession().setMaxInactiveInterval(120);
             // 使用生产的验证码字符串返回一个BufferedImage对象并转为byte写入到byte数组中
             BufferedImage challenge = kaptcha.createImage(createText);
             ImageIO.write(challenge, "jpg", jpegOutputStream);
@@ -137,11 +138,14 @@ public class KaptchaController {
 
         String rightCode = (String) request.getSession().getAttribute("rightCode");
         String tryCode = request.getParameter("tryCode");
-        System.out.println("rightCode:" + rightCode + " ———— tryCode:" + tryCode);
+        System.out.println("rightCode：" + rightCode + " —————————— tryCode：" + tryCode);
         if (!rightCode.equals(tryCode)) {
             response.sendRedirect("/index");
         } else {
+            // 测试session的最大存活时间
+            // response.sendRedirect("/session");
             response.sendRedirect("/cookies");
+            return null;
         }
         return null;
     }
@@ -151,10 +155,29 @@ public class KaptchaController {
         return "index";
     }
 
+    /**
+     * Java后台获取session的所有内容（获取到key和value的方法）
+     *
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/session", method = RequestMethod.GET)
     public String getSessionId(HttpServletRequest request) {
-        int sessionTime = request.getSession().getMaxInactiveInterval();
-        return "SessionID：" + request.getSession().getId() + "**********" + "生命周期：" + sessionTime;
+        // 获取session
+        HttpSession session = request.getSession();
+        // 获取session中所有的键值
+        Enumeration<String> attrs = session.getAttributeNames();
+        // 遍历attrs中的
+        while (attrs.hasMoreElements()) {
+            // 获取session键值
+            String name = attrs.nextElement();
+            // 根据键值取session中的值
+            Object value = session.getAttribute(name);
+            // 打印结果
+            System.out.println("----------" + name + ":" + value + "----------\n");
+            System.out.println(">>>>>>>>>>" + session.getId() + ":" + session.getMaxInactiveInterval() + "<<<<<<<<<<\n");
+        }
+        return null;
     }
 
 }
