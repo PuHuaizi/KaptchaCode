@@ -33,7 +33,10 @@ public class HttpClientController {
     public String getCookies(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // HttpResult result = new HttpResult();
         // result.setBody(httpAPIService.doGet("https://ids.cdstm.cn:8443/zgkjg/doLogin.jsp"));
-        String url = "https://ids.cdstm.cn:8443/zgkjg/ids/sendSMS.do";
+        String url = "http://192.168.2.7:8080/zgkjg/ids/sendSMS.do";
+
+        response.setContentType("application/javascript; charset=utf-8");
+        response.setCharacterEncoding("utf-8");
 
         Map<String, Object> params = new HashMap<>();
         params.put("jsoncallback", request.getAttribute("jsoncallback"));

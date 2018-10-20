@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,9 +27,11 @@ import com.google.code.kaptcha.impl.DefaultKaptcha;
 /**
  * @author Admin
  */
-@Controller
-// @RestController
+// @Controller
+@RestController
 public class KaptchaController {
+
+    static Gson gson = new Gson();
 
     /**
      * 1、验证码工具
@@ -141,13 +145,16 @@ public class KaptchaController {
         System.out.println("rightCode：" + rightCode + " —————————— tryCode：" + tryCode);
         if (!rightCode.equals(tryCode)) {
             response.sendRedirect("/index");
+            HashMap<String, String> map = new HashMap<>();
+            map.put("msg", "验证码未通过");
+            map.put("result", "false");
+            return gson.toJson(map);
         } else {
             // 测试session的最大存活时间
             // response.sendRedirect("/session");
             response.sendRedirect("/cookies");
             return null;
         }
-        return null;
     }
 
     @RequestMapping("/index")
