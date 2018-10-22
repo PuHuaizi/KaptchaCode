@@ -38,6 +38,10 @@ public class HttpClientController {
         response.setContentType("application/javascript; charset=utf-8");
         response.setCharacterEncoding("utf-8");
 
+        System.out.println("要发送的jsoncallback：" + request.getAttribute("jsoncallback"));
+        System.out.println("要发送的mobile：" + request.getAttribute("mobile"));
+        System.out.println("要发送的_：" + request.getAttribute("_"));
+
         Map<String, Object> params = new HashMap<>();
         params.put("jsoncallback", request.getAttribute("jsoncallback"));
         params.put("mobile", request.getAttribute("mobile"));
@@ -69,7 +73,7 @@ public class HttpClientController {
         // closeableHttpResponse.close();
         // httpClient关闭
         // httpClient.close();
-        
+
         return result;
     }
 }

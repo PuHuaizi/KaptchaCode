@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
+import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -110,7 +111,7 @@ public class KaptchaController {
      * @return
      */
     @RequestMapping("/verify")
-    public String imgVerifyCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String imgVerifyCode(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         // 得到请求的参数Map，注意map的value是String数组类型
         // Map map = request.getParameterMap();
         // Set<String> keySet = map.keySet();
@@ -121,12 +122,17 @@ public class KaptchaController {
         //     }
         // }
 
-        // String jsoncallback =  request.getParameter("jsoncallback");
-        // String mobile =  request.getParameter("mobile");
-        // String _ =  request.getParameter("_");
-        String jsoncallback = "jQuery21405098761300080115_1539846799825";
-        String mobile = "15261660178";
-        String _ = "1539846799827";
+        String jsoncallback = request.getParameter("jsoncallback");
+        String mobile = request.getParameter("mobile");
+        String _ = request.getParameter("_");
+
+        System.out.println("前台获取到的jsoncallback：" + jsoncallback);
+        System.out.println("前台获取到的mobile：" + mobile);
+        System.out.println("前台获取到的_：" + _);
+
+        // String jsoncallback = "jQuery21405098761300080115_1539846799825";
+        // String mobile = "15261660178";
+        // String _ = "1539846799827";
 
         request.setAttribute("jsoncallback", jsoncallback);
         request.setAttribute("mobile", mobile);
@@ -146,13 +152,13 @@ public class KaptchaController {
         if (!rightCode.equals(tryCode)) {
             response.sendRedirect("/index");
             HashMap<String, String> map = new HashMap<>();
-            map.put("msg", "验证码未通过");
+            map.put("msg", "验证码错误");
             map.put("result", "false");
             return gson.toJson(map);
         } else {
             // 测试session的最大存活时间
             // response.sendRedirect("/session");
-            response.sendRedirect("/cookies");
+            request.getRequestDispatcher("/cookies").forward(request, response);
             return null;
         }
     }

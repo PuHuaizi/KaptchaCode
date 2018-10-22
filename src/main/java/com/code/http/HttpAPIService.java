@@ -210,6 +210,7 @@ public class HttpAPIService {
                 IOUtils.closeQuietly(input);
             }
         }
+        System.out.println("短信发送接口返回的数据：" + result);
         return result;
     }
 
