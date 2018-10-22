@@ -184,34 +184,9 @@ public class HttpAPIService {
         return HttpClients.createDefault();
     }
 
-    public static String get(String uri, Map<String, Object> params, Map<String, String> headers) throws IOException {
+    public static HttpResponse get(String uri, Map<String, Object> params, Map<String, String> headers) throws IOException {
         HttpClient client = getHttpClient();
         return get(client, uri, params, headers);
-    }
-
-    public static String get(HttpClient client, String uri, Map<String, Object> params, Map<String, String> headers) throws IOException {
-        String result = StringUtils.EMPTY;
-        String fullUrl = buildUrlWithParams(uri, params);
-        HttpGet httpGet = new HttpGet(fullUrl);
-
-        if (headers != null) {
-            for (Map.Entry<String, String> entry : headers.entrySet()) {
-                httpGet.addHeader(entry.getKey(), entry.getValue());
-            }
-        }
-        HttpResponse httpResponse = client.execute(httpGet);
-        InputStream input = httpResponse.getEntity().getContent();
-        if (null != input) {
-            try {
-                result = IOUtils.toString(input, "UTF-8");
-            } catch (IOException e) {
-                throw e;
-            } finally {
-                IOUtils.closeQuietly(input);
-            }
-        }
-        System.out.println("短信发送接口返回的数据：" + result);
-        return result;
     }
 
     private static String buildUrlWithParams(String uri, Map<String, Object> params) throws UnsupportedEncodingException {
@@ -232,6 +207,37 @@ public class HttpAPIService {
         }
         String fullUrl = urlBuilder.toString();
         return fullUrl;
+    }
+
+    public static HttpResponse get(HttpClient client, String uri, Map<String, Object> params, Map<String, String> headers) throws IOException {
+        String result = StringUtils.EMPTY;
+        String fullUrl = buildUrlWithParams(uri, params);
+        HttpGet httpGet = new HttpGet(fullUrl);
+
+        if (headers != null) {
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                httpGet.addHeader(entry.getKey(), entry.getValue());
+            }
+        }
+        HttpResponse httpResponse = client.execute(httpGet);
+
+        // 返回响应网站的实体页面（例如：“ https://www.baidu.com ” 的HTML页面内容）
+        InputStream input = httpResponse.getEntity().getContent();
+        if (null != input) {
+            try {
+                result = IOUtils.toString(input, "UTF-8");
+            } catch (IOException e) {
+                throw e;
+            } finally {
+                IOUtils.closeQuietly(input);
+            }
+        }
+        // System.out.println("短信发送接口返回的数据：" + result);
+
+        // String responseHeaders = StringUtils.join(httpResponse.getAllHeaders());
+        // System.out.println("短信发送接口的响应头：" + responseHeaders);
+
+        return httpResponse;
     }
 
 }

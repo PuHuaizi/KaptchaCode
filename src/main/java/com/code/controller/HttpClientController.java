@@ -1,10 +1,13 @@
 package com.code.controller;
 
+import ch.qos.logback.core.pattern.FormatInfo;
 import com.code.http.HttpAPIService;
 import com.code.http.HttpResult;
+import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -33,7 +36,8 @@ public class HttpClientController {
     public String getCookies(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // HttpResult result = new HttpResult();
         // result.setBody(httpAPIService.doGet("https://ids.cdstm.cn:8443/zgkjg/doLogin.jsp"));
-        String url = "http://192.168.2.7:8080/zgkjg/ids/sendSMS.do";
+        // String url = "http://192.168.2.7:8080/zgkjg/ids/sendSMS.do";
+        String url = "https://www.baidu.com/";
 
         response.setContentType("application/javascript; charset=utf-8");
         response.setCharacterEncoding("utf-8");
@@ -52,12 +56,21 @@ public class HttpClientController {
         while (requestHeaders.hasMoreElements()) {
             String headerName = (String) requestHeaders.nextElement();
             String headValue = request.getHeader(headerName);
-            System.out.println(headerName + "=" + headValue);
+            System.out.println(headerName + " : " + headValue);
 
             headers.put(headerName, headValue);
         }
 
-        String result = HttpAPIService.get(url, params, headers);
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+
+        // String result = HttpAPIService.get(url, params, headers);
+        HttpResponse httpResponse = HttpAPIService.get(url, null, null);
+        Header[] allHeaders = httpResponse.getAllHeaders();
+        for (Header header : allHeaders) {
+            response.addHeader(header.getName(), header.getValue());
+            System.out.println(header.getName() + " : " + header.getValue());
+        }
 
         // 创建 HttpClient 实例
         //CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -74,6 +87,6 @@ public class HttpClientController {
         // httpClient关闭
         // httpClient.close();
 
-        return result;
+        return "success";
     }
 }
