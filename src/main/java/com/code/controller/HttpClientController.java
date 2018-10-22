@@ -29,13 +29,13 @@ import java.util.Map;
 @RestController
 public class HttpClientController {
 
+    static Gson gson = new Gson();
+
     //@Resource
     //private HttpAPIService httpAPIService;
 
     @RequestMapping("/cookies")
     public String getCookies(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // HttpResult result = new HttpResult();
-        // result.setBody(httpAPIService.doGet("https://ids.cdstm.cn:8443/zgkjg/doLogin.jsp"));
         // String url = "http://192.168.2.7:8080/zgkjg/ids/sendSMS.do";
         String url = "https://www.baidu.com/";
 
@@ -66,27 +66,22 @@ public class HttpClientController {
 
         // String result = HttpAPIService.get(url, params, headers);
         HttpResponse httpResponse = HttpAPIService.get(url, null, null);
-        Header[] allHeaders = httpResponse.getAllHeaders();
-        for (Header header : allHeaders) {
-            response.addHeader(header.getName(), header.getValue());
-            System.out.println(header.getName() + " : " + header.getValue());
+
+        HashMap<String, String> map = new HashMap<>(16);
+        if (httpResponse.getStatusLine().getStatusCode() == 200) {
+            Header[] allHeaders = httpResponse.getAllHeaders();
+            for (Header header : allHeaders) {
+                response.addHeader(header.getName(), header.getValue());
+                System.out.println(header.getName() + " : " + header.getValue());
+            }
+            map.put("msg", "验证码发送成功");
+            map.put("result", "true");
+            return gson.toJson(map);
+        } else {
+            map.put("msg", "验证码发送失败");
+            map.put("result", "false");
+            return gson.toJson(map);
         }
 
-        // 创建 HttpClient 实例
-        //CloseableHttpClient httpClient = HttpClients.createDefault();
-        // 创建 HttpGet 实例
-        //HttpGet httpGet = new HttpGet("https://www.baidu.com");
-        // 执行http get请求
-        // CloseableHttpResponse closeableHttpResponse = httpClient.execute(httpGet);
-        // 获取返回实体
-        // HttpEntity entity = closeableHttpResponse.getEntity();
-        // 获取网页内容
-        // System.out.println("网页内容：" + EntityUtils.toString(entity, "utf-8"));
-        // response关闭
-        // closeableHttpResponse.close();
-        // httpClient关闭
-        // httpClient.close();
-
-        return "success";
     }
 }

@@ -151,7 +151,7 @@ public class KaptchaController {
         System.out.println("rightCode：" + rightCode + " —————————— tryCode：" + tryCode);
         if (!rightCode.equals(tryCode)) {
             response.sendRedirect("/index");
-            HashMap<String, String> map = new HashMap<>();
+            HashMap<String, String> map = new HashMap<>(16);
             map.put("msg", "验证码错误");
             map.put("result", "false");
             return gson.toJson(map);
