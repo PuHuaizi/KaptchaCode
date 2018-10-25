@@ -54,11 +54,18 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.github.penggle/kaptcha -->
+        <!-- Kaptcha依赖组件 -->
+        <!--<dependency>-->
+            <!--<groupId>com.github.penggle</groupId>-->
+            <!--<artifactId>kaptcha</artifactId>-->
+            <!--<version>2.3.2</version>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>com.github.penggle</groupId>
+            <groupId>kaptcha</groupId>
             <artifactId>kaptcha</artifactId>
             <version>2.3.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/kaptcha-2.3.2.jar</systemPath>
         </dependency>
 
         <dependency>

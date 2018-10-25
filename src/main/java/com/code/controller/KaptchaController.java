@@ -15,7 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.code.entity.ResultCode;
+import com.code.entity.ResultEntity;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -111,7 +114,7 @@ public class KaptchaController {
      * @return
      */
     @RequestMapping("/verify")
-    public String imgVerifyCode(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public ResultEntity imgVerifyCode(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         // 得到请求的参数Map，注意map的value是String数组类型
         // Map map = request.getParameterMap();
         // Set<String> keySet = map.keySet();
@@ -149,17 +152,29 @@ public class KaptchaController {
         String rightCode = (String) request.getSession().getAttribute("rightCode");
         String tryCode = request.getParameter("tryCode");
         System.out.println("rightCode：" + rightCode + " —————————— tryCode：" + tryCode);
+        // HashMap<String, String> map = new HashMap<>(16);
+
         if (!rightCode.equals(tryCode)) {
-            response.sendRedirect("/index");
-            HashMap<String, String> map = new HashMap<>(16);
-            map.put("msg", "验证码错误");
-            map.put("result", "false");
-            return gson.toJson(map);
+            // response.sendRedirect("/index");
+
+            // map.put("msg", "验证码错误");
+            // map.put("result", "false");
+
+            ResultEntity resultEntity = new ResultEntity(ResultCode.ERROR);
+            return resultEntity;
         } else {
             // 测试session的最大存活时间
             // response.sendRedirect("/session");
-            request.getRequestDispatcher("/cookies").forward(request, response);
-            return null;
+            // request.getRequestDispatcher("/cookies").forward(request, response);
+            // return null;
+
+            // map.put("msg", "验证码正确");
+            // map.put("result", "true");
+            // JsonElement element = gson.toJsonTree(map);
+            // return gson.toJson(map);
+
+            ResultEntity resultEntity = new ResultEntity(ResultCode.SUCCESS);
+            return resultEntity;
         }
     }
 
