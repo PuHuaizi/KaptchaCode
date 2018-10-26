@@ -1,12 +1,13 @@
 package com.code.controller;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import com.code.entity.ResultCode;
+import com.code.entity.ResultEntity;
+import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.google.gson.Gson;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -14,19 +15,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.code.entity.ResultCode;
-import com.code.entity.ResultEntity;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.google.code.kaptcha.impl.DefaultKaptcha;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Enumeration;
 
 /**
  * @author Admin
@@ -181,6 +173,13 @@ public class KaptchaController {
     @RequestMapping("/index")
     public String toIndex() {
         return "index";
+    }
+
+    @RequestMapping("/test")
+    public ResultEntity test() {
+        String string = "[{'name':'toke','shuxue':'78','yuwen':'80'},{'name':'seri','shuxue':'20','yuwen':'90'},{'name':'heer','shuxue':'99','yuwen':'56'}]";
+        ResultEntity resultEntity = new ResultEntity(ResultCode.SUCCESS);
+        return resultEntity;
     }
 
     /**

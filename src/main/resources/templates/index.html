@@ -9,22 +9,41 @@
     <link rel="stylesheet" href="../bootstrap3/css/bootstrap.min.css"/>
     <script type="text/javascript" src="../bootstrap3/js/jquery-1.11.2.min.js"></script>
     <script type="text/javascript" src="../bootstrap3/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        body {
+            padding: 10px
+        }
+    </style>
+    <script>
+        function sendAjax() {
+            var tryCode = $("#tryCode").val();
+            $.ajax({
+                url: "verify",
+                data: {"tryCode": tryCode},
+                type: "get",
+                dataType: "json",
+                success: function (data) {
+                    alert("进入Ajax方法！");
+                    var json = JSON.stringify(data);
+                    alert(json);
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+        }
+    </script>
 </head>
-<style type="text/css">
-    body {
-        padding: 10px
-    }
-</style>
 <body>
 <!-- 提示 -->
-<h3 th:text="${info}"></h3>
+<!--<h3 th:text="${info}"></h3>-->
 <div>
     <!-- 后面添加参数起到清除缓存作用 -->
     <img alt="验证码" onclick="this.src='/Kaptcha.jpg?' + Math.floor(Math.random() * 100)" src="/Kaptcha.jpg"/>
 </div>
-<form action="verify">
-    <input type="text" name="tryCode"/>
-    <input type="submit" value="提交" class="btn btn-success"/>
-</form>
+<!--<form action="verify">-->
+<input type="text" id="tryCode" name="tryCode"/>
+<input type="submit" value="提交" class="btn btn-success" onclick="sendAjax()"/>
+<!--</form>-->
 </body>
 </html>
