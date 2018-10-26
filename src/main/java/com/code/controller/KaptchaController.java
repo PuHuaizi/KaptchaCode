@@ -3,21 +3,18 @@ package com.code.controller;
 import com.code.entity.ResultCode;
 import com.code.entity.ResultEntity;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.imageio.ImageIO;
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Enumeration;
 
 /**
@@ -26,8 +23,6 @@ import java.util.Enumeration;
 // @Controller
 @RestController
 public class KaptchaController {
-
-    static Gson gson = new Gson();
 
     /**
      * 1、验证码工具
@@ -45,7 +40,7 @@ public class KaptchaController {
     @RequestMapping("/Kaptcha.jpg")
     public void getKaptcha(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
             throws Exception {
-        byte[] captchaChallengeAsJpeg = null;
+        byte[] captchaChallengeAsJpeg;
         ByteArrayOutputStream jpegOutputStream = new ByteArrayOutputStream();
         try {
             // 生产验证码字符串并保存到session中
@@ -53,6 +48,8 @@ public class KaptchaController {
             httpServletRequest.getSession().setAttribute("rightCode", createText);
             // 设置 Session 过期时间（单位：秒）
             httpServletRequest.getSession().setMaxInactiveInterval(120);
+            System.out.println(">>>>>>>>>>" + httpServletRequest.getSession().getAttribute("rightCode"));
+            System.out.println(">>>>>>>>>>" + httpServletRequest.getSession().getId());
             // 使用生产的验证码字符串返回一个BufferedImage对象并转为byte写入到byte数组中
             BufferedImage challenge = kaptcha.createImage(createText);
             ImageIO.write(challenge, "jpg", jpegOutputStream);
@@ -106,7 +103,7 @@ public class KaptchaController {
      * @return
      */
     @RequestMapping("/verify")
-    public ResultEntity imgVerifyCode(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public ResultEntity imgVerifyCode(HttpServletRequest request, HttpServletResponse response) {
         // 得到请求的参数Map，注意map的value是String数组类型
         // Map map = request.getParameterMap();
         // Set<String> keySet = map.keySet();
@@ -117,21 +114,21 @@ public class KaptchaController {
         //     }
         // }
 
-        String jsoncallback = request.getParameter("jsoncallback");
-        String mobile = request.getParameter("mobile");
-        String _ = request.getParameter("_");
+        // String jsoncallback = request.getParameter("jsoncallback");
+        // String mobile = request.getParameter("mobile");
+        // String _ = request.getParameter("_");
 
-        System.out.println("前台获取到的jsoncallback：" + jsoncallback);
-        System.out.println("前台获取到的mobile：" + mobile);
-        System.out.println("前台获取到的_：" + _);
+        // System.out.println("前台获取到的jsoncallback：" + jsoncallback);
+        // System.out.println("前台获取到的mobile：" + mobile);
+        // System.out.println("前台获取到的_：" + _);
 
         // String jsoncallback = "jQuery21405098761300080115_1539846799825";
         // String mobile = "15261660178";
         // String _ = "1539846799827";
 
-        request.setAttribute("jsoncallback", jsoncallback);
-        request.setAttribute("mobile", mobile);
-        request.setAttribute("_", _);
+        // request.setAttribute("jsoncallback", jsoncallback);
+        // request.setAttribute("mobile", mobile);
+        // request.setAttribute("_", _);
 
         // Enumeration requestHeaders = request.getHeaderNames();
         // while (requestHeaders.hasMoreElements()) {
@@ -140,17 +137,15 @@ public class KaptchaController {
         //     System.out.println(headerName + "=" + headValue);
         // }
 
+        response.setContentType("application/javascript; charset=utf-8");
+        response.setCharacterEncoding("utf-8");
 
         String rightCode = (String) request.getSession().getAttribute("rightCode");
         String tryCode = request.getParameter("tryCode");
         System.out.println("rightCode：" + rightCode + " —————————— tryCode：" + tryCode);
-        // HashMap<String, String> map = new HashMap<>(16);
 
         if (!rightCode.equals(tryCode)) {
             // response.sendRedirect("/index");
-
-            // map.put("msg", "验证码错误");
-            // map.put("result", "false");
 
             ResultEntity resultEntity = new ResultEntity(ResultCode.ERROR);
             return resultEntity;
@@ -159,11 +154,6 @@ public class KaptchaController {
             // response.sendRedirect("/session");
             // request.getRequestDispatcher("/cookies").forward(request, response);
             // return null;
-
-            // map.put("msg", "验证码正确");
-            // map.put("result", "true");
-            // JsonElement element = gson.toJsonTree(map);
-            // return gson.toJson(map);
 
             ResultEntity resultEntity = new ResultEntity(ResultCode.SUCCESS);
             return resultEntity;
@@ -177,7 +167,7 @@ public class KaptchaController {
 
     @RequestMapping("/test")
     public ResultEntity test() {
-        String string = "[{'name':'toke','shuxue':'78','yuwen':'80'},{'name':'seri','shuxue':'20','yuwen':'90'},{'name':'heer','shuxue':'99','yuwen':'56'}]";
+        // String string = "[{'name':'toke','shuxue':'78','yuwen':'80'},{'name':'seri','shuxue':'20','yuwen':'90'},{'name':'heer','shuxue':'99','yuwen':'56'}]";
         ResultEntity resultEntity = new ResultEntity(ResultCode.SUCCESS);
         return resultEntity;
     }
